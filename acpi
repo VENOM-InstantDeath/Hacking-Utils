@@ -2,7 +2,7 @@
 
 : '
 ACPI replacement
-Written by Darth Venom
+Written by Darth Venom and Tobi Emotic
 < = >
 '
 if [ $1 -z ]; then
