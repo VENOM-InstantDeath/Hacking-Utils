@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-#hcut (o hkpac) - Gestor de paquetes para el repositorio Hacking-Utils.
+#ghcut (o ghkpac) - GUI basada en texto para hcut (o hkpac).
 #Escrito por Darth Venom y Tobi Emotic.
 #< = >
 
 # Importa el módulo curses de la librería standard
+
 import curses
 
 
@@ -22,10 +23,14 @@ El objeto stdscr es necesario para realizar cualquier operación en curses, lo p
 
 En este programa se usa la función Wrapper, la cual en el proceso declara stdscr, así que no hace falta hacerlo.
 '''
+
 def main(stdscr):
     pass;
 
 
 # if que comprueba si el ejecutor del programa es el programa en sí o si está siendo ejecutado como módulo o desde otro programa. Si el código está siendo ejecutado por el propio programa, entonces se ejecuta el interior del if (ingresando a la función main()).
+
 if __name__ == '__main__':
+
+    #la función wrapper() de la librería curses se utiliza para prevenir que la sesión de terminal se vuelva un caos si el programa termina en plena ejecución debido a un error.
     curses.wrapper(main);
