@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#hcut (o hkpac) - Gestor de paquetes para el repositorio Hacking-Utils.
+#hkpac - Gestor de paquetes para el repositorio Hacking-Utils.
 #Escrito por Darth Venom y Tobi Emotic.
 #< = >
 

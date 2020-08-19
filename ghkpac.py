@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#ghcut (o ghkpac) - GUI basada en texto para hcut (o hkpac).
+#ghkpac - GUI basada en texto para hkpac.
 #Escrito por Darth Venom y Tobi Emotic.
 #< = >
 
