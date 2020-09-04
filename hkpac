@@ -6,6 +6,7 @@
 
 import sys;
 import os;
+import json;
 
 # Definición de la función main(). En Python esta función no es necesaria.
 
@@ -21,21 +22,20 @@ def main():
 
             if sys.argv[x] == "install":
                 op="install"
-            if sys.argv[x] == "search":
+            elif sys.argv[x] == "search":
                 op="search"
-            if sys.argv[x] == "remove":
+            elif sys.argv[x] == "remove":
                 op="remove"
-            if sys.argv[x] == "removeconf":
+            elif sys.argv[x] == "removeconf":
                 op="rmconf"
-            if sys.argv[x] == "rmwconf":
+            elif sys.argv[x] == "rmwconf":
                 op="rmwconf"
             else:
                 print("hkpac: Opción invalida - " + sys.argv[x])
                 exit(1)
 
         elif op="install":
-            l
-
+            pass
     pass;
 
 
