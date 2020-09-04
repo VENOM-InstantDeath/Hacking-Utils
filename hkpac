@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+#hkpac - Gestor de paquetes para el repositorio Hacking-Utils.
+#Escrito por Darth Venom y Tobi Emotic.
+#< = >
+
+import sys;
+import os;
+
+# Definición de la función main(). En Python esta función no es necesaria.
+
+def main():
+    if len(sys.argv) == 1:
+        print("error: No se ha especificado una operacion")
+        exit(1)
+
+    x=1
+    op="null"
+    for i in sys.argv:
+        if op == "null":
+
+            if sys.argv[x] == "install":
+                op="install"
+            if sys.argv[x] == "search":
+                op="search"
+            if sys.argv[x] == "remove":
+                op="remove"
+            if sys.argv[x] == "removeconf":
+                op="rmconf"
+            if sys.argv[x] == "rmwconf":
+                op="rmwconf"
+            else:
+                print("hkpac: Opción invalida - " + sys.argv[x])
+                exit(1)
+
+        elif op="install":
+            l
+
+    pass;
+
+
+# if que comprueba si el ejecutor del programa es el programa en sí o si está siendo ejecutado como módulo o desde otro programa. Si el código está siendo ejecutado por el propio programa, entonces se ejecuta el interior del if (ingresando a la función main()).
+
+if __name__ == '__main__':
+
+    #llamada a la función main()
+    main();
