@@ -11,6 +11,9 @@ import json;
 # Definición de la función main(). En Python esta función no es necesaria.
 
 def main():
+#    pcd = os.getcwd()
+    pcd = os.chdir('/usr/local/bin')
+    os.chdir('/etc')
     if len(sys.argv) == 1:
         print("error: No se ha especificado una operacion")
         exit(1)
@@ -22,21 +25,55 @@ def main():
 
             if sys.argv[x] == "install":
                 op="install"
+                x+=1
+                continue
             elif sys.argv[x] == "search":
                 op="search"
+                x+=1
+                continue
             elif sys.argv[x] == "remove":
                 op="remove"
+                x+=1
+                continue
             elif sys.argv[x] == "removeconf":
                 op="rmconf"
+                x+=1
+                continue
             elif sys.argv[x] == "rmwconf":
                 op="rmwconf"
+                x+=1
+                continue
             else:
                 print("hkpac: Opción invalida - " + sys.argv[x])
                 exit(1)
 
-        elif op="install":
-            pass
-    pass;
+        elif op == "install":
+
+            if len(sys.argv)-1 < x:
+                print('error: No se ha especificado un objetivo.')
+                exit(1)
+            if len(sys.argv[x]) == 0:
+                print('error: No se ha especificado un objetivo.')
+                exit(1)
+            if not 'hkpac.json' in os.listdir():
+                print('Faltan los datos de hkpac. Ejecute \'hkpac update\'')
+                exit(1)
+            with open('hkpac.json') as F:
+                hkpac = json.load(F)
+            if sys.argv[x] in hkpac['packs'][0]:
+                os.chdir(pcd)
+                os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x])
+                os.system('chmod +x ' + sys.argv[x])
+                os.chdir('/etc')
+                if x+1 > len(sys.argv)-1:
+                    exit()
+                else:
+                    x+=1
+                    continue
+            else:
+                print('error: Objetivo no encontrado: ' + sys.argv[x])
+                exit()
+
 
 
 # if que comprueba si el ejecutor del programa es el programa en sí o si está siendo ejecutado como módulo o desde otro programa. Si el código está siendo ejecutado por el propio programa, entonces se ejecuta el interior del if (ingresando a la función main()).
