@@ -11,16 +11,27 @@ import json;
 # Definición de la función main(). En Python esta función no es necesaria.
 
 def main():
-#    pcd = os.getcwd()
-    pcd = os.chdir('/usr/local/bin')
+#    pcd = os.getcwd()          //descartar
+#    pcd = '/usr/local/bin'
+    F=None
     os.chdir('/etc')
     if len(sys.argv) == 1:
         print("error: No se ha especificado una operacion")
         exit(1)
-
+        ###################################Chequeo de configuración###################################
+    if 'hkpac.conf' in os.listdir():
+        con=open('hkpac.conf','r')
+        conf=json.load(con)
+        del(con)
+        instdir=conf['conf'][0]['install dir']
+    else:
+        instdir='/usr/local/bin'
     x=1
     op="null"
     for i in sys.argv:
+
+        #######################################Selección de operación###############################
+
         if op == "null":
 
             if sys.argv[x] == "install":
@@ -43,9 +54,16 @@ def main():
                 op="rmwconf"
                 x+=1
                 continue
+            elif sys.argv[x] == "config":
+                op="config"
+                x+=1
+                continue
             else:
                 print("hkpac: Opción invalida - " + sys.argv[x])
                 exit(1)
+
+        #############################################################################################
+        ######################################Operación install######################################
 
         elif op == "install":
 
@@ -55,13 +73,14 @@ def main():
             if len(sys.argv[x]) == 0:
                 print('error: No se ha especificado un objetivo.')
                 exit(1)
-            if not 'hkpac.json' in os.listdir():
-                print('Faltan los datos de hkpac. Ejecute \'hkpac update\'')
-                exit(1)
-            with open('hkpac.json') as F:
-                hkpac = json.load(F)
+            if F == None:
+                if not 'hkpac.json' in os.listdir():
+                    print('Faltan los datos de hkpac. Ejecute \'hkpac update\'')
+                    exit(1)
+                with open('hkpac.json') as F:
+                    hkpac = json.load(F)
             if sys.argv[x] in hkpac['packs'][0]:
-                os.chdir(pcd)
+                os.chdir(instdir)
                 os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x])
                 os.system('chmod +x ' + sys.argv[x])
                 os.chdir('/etc')
@@ -73,6 +92,49 @@ def main():
             else:
                 print('error: Objetivo no encontrado: ' + sys.argv[x])
                 exit()
+        ##############################################################################################
+        ######################################Operación config########################################
+
+        elif op == "config":
+            
+            if len(sys.argv)-1 < x:
+                print('error: No se ha especificado un ajuste.')
+                exit(1)
+            if len(sys.argv[x]) == 0:
+                print('error: No se ha especificado un ajuste.')
+                exit(1)
+#            if """
+
+        ##############################################################################################
+        ###################################Operación remove###########################################
+
+        elif op == "remove":
+
+            if len(sys.argv)-1 < x:
+                print('error: No se ha especificado un objetivo.')
+                exit(1)
+            if len(sys.argv[x]) == 0:
+                print('error: No se ha especificado un objetivo.')
+                exit(1)
+            if F == None:
+                if not 'hkpac.json' in os.listdir():
+                    print('Faltan los datos de hkpac. Ejecute \'hkpac update\'')
+                    exit(1)
+                with open('hkpac.json') as F:
+                    hkpac = json.load(F)
+            if sys.argv[x] in hkpac['packs'][0]:
+                os.chdir(instdir)
+                os.remove(sys.argv[x])
+                print(sys.argv[x] + ' se ha removido.')
+                if x+1 > len(sys.argv)-1:
+                    exit()
+                else:
+                    x+=1
+                    continue
+            else:
+                print('error: Objetivo no encontrado: ' + sys.argv[x])
+                exit()
+
 
 
 
