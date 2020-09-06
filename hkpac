@@ -14,7 +14,14 @@ def main():
 #    pcd = os.getcwd()          //descartar
 #    pcd = '/usr/local/bin'
     F=None
-    os.chdir('/etc')
+    if os.system('uname -a | grep Android &> /dev/null') == 0:
+        termux=True
+    else:
+        termux=False
+    if not termux:
+        os.chdir('/etc')
+    else:
+        os.chdir('/data/data/com.termux/files/usr/etc')
     if len(sys.argv) == 1:
         print("error: No se ha especificado una operacion")
         exit(1)
@@ -24,8 +31,16 @@ def main():
         conf=json.load(con)
         del(con)
         instdir=conf['conf'][0]['install dir']
+        termux=conf['conf'][0]['Termux']
     else:
-        instdir='/usr/local/bin'
+        if os.system('uname -a | grep Android &> /dev/null') == 0:
+            termux=True
+            instdir='/data/data/com.termux/files/usr/local/bin'
+
+        else:
+            termux=False
+            instdir='/usr/local/bin'
+
     x=1
     op="null"
     for i in sys.argv:
@@ -83,7 +98,10 @@ def main():
                 os.chdir(instdir)
                 os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x])
                 os.system('chmod +x ' + sys.argv[x])
-                os.chdir('/etc')
+                if not termux:
+                    os.chdir('/etc')
+                else:
+                    os.chdir('/data/data/com.termux/files/usr/etc')
                 if x+1 > len(sys.argv)-1:
                     exit()
                 else:
@@ -103,7 +121,58 @@ def main():
             if len(sys.argv[x]) == 0:
                 print('error: No se ha especificado un ajuste.')
                 exit(1)
-#            if """
+            if sys.argv[x] == 'instdir':
+                x+=1
+
+                if len(sys.argv)-1 < x:
+                    print('error: No se ha especificado el valor.')
+                    exit(1)
+                if len(sys.argv[x]) == 0:
+                    print('error: No se ha especificado el valor.')
+                    exit(1)
+
+                if sys.argv[x] == 'show':
+                    print(instdir)
+                    exit()
+                if sys.argv[x] == 'default':
+
+                    if not termux:
+                        os.chdir('/etc')
+                    else:
+                        os.chdir('/data/data/com.termux/files/usr/etc')
+                    if not 'hkpac.conf' in os.listdir():
+                        F=open('hkpac.conf','w+')
+                    else:
+                        F=open('hkpac.conf','w')
+                    conf['conf'][0]["install dir"] = '/usr/local/bin'
+                    F.write(json.dumps(conf,indent=4))
+                    F.seek(0)
+                    F.close()
+                    print('Instdir cambiado a ' + '/usr/local/bin')
+                    exit()
+
+                try:
+                    os.chdir(sys.argv[x])
+                except FileNotFoundError:
+                    print('error: El directorio especificado no existe.')
+                    exit(1)
+                if not termux:
+                    os.chdir('/etc')
+                else:
+                    os.chdir('/data/data/com.termux/files/usr/etc')
+                if not 'hkpac.conf' in os.listdir():
+                    F=open('hkpac.conf','w+')
+                else:
+                    F=open('hkpac.conf','w')
+                conf['conf'][0]["install dir"] = sys.argv[x]
+                F.write(json.dumps(conf,indent=4))
+                F.seek(0)
+                F.close()
+                print('Instdir cambiado a ' + sys.argv[x])
+                exit()
+            else:
+                print('error: El ajuste especificado no existe.')
+                exit(1)
 
         ##############################################################################################
         ###################################Operación remove###########################################
@@ -133,7 +202,7 @@ def main():
                     continue
             else:
                 print('error: Objetivo no encontrado: ' + sys.argv[x])
-                exit()
+                exit(1)
 
 
 
