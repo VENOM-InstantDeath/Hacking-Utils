@@ -21,7 +21,7 @@ def main():
     if not termux:
         os.chdir('/etc')
     else:
-        os.chdir('/data/data/com.termux/files/usr/etc')
+        os.chdir('/data/data/com.termux/files/home/')
     if len(sys.argv) == 1:
         print("error: No se ha especificado una operacion")
         exit(1)
@@ -35,7 +35,7 @@ def main():
     else:
         if os.system('uname -a | grep Android &> /dev/null') == 0:
             termux=True
-            instdir='/data/data/com.termux/files/usr/local/bin'
+            instdir='/data/data/com.termux/files/usr/bin'
 
         else:
             termux=False
@@ -101,7 +101,7 @@ def main():
                 if not termux:
                     os.chdir('/etc')
                 else:
-                    os.chdir('/data/data/com.termux/files/usr/etc')
+                    os.chdir('/data/data/com.termux/files/home/')
                 if x+1 > len(sys.argv)-1:
                     exit()
                 else:
@@ -139,7 +139,7 @@ def main():
                     if not termux:
                         os.chdir('/etc')
                     else:
-                        os.chdir('/data/data/com.termux/files/usr/etc')
+                        os.chdir('/data/data/com.termux/files/home')
                     if not 'hkpac.conf' in os.listdir():
                         F=open('hkpac.conf','w+')
                     else:
@@ -159,7 +159,7 @@ def main():
                 if not termux:
                     os.chdir('/etc')
                 else:
-                    os.chdir('/data/data/com.termux/files/usr/etc')
+                    os.chdir('/data/data/com.termux/files/home/')
                 if not 'hkpac.conf' in os.listdir():
                     F=open('hkpac.conf','w+')
                 else:
