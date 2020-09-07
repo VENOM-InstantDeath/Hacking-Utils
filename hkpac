@@ -25,13 +25,14 @@ def main():
     if len(sys.argv) == 1:
         print("error: No se ha especificado una operacion")
         exit(1)
-        ###################################Chequeo de configuración###################################
+        ###################################Chequeo de configuración#################################
+
     if 'hkpac.conf' in os.listdir():
         con=open('hkpac.conf','r')
         conf=json.load(con)
         del(con)
         instdir=conf['conf'][0]['install dir']
-        termux=conf['conf'][0]['Termux']
+#        termux=conf['conf'][0]['Termux']               //Ajuste descartado
     else:
         if os.system('uname -a | grep Android &> /dev/null') == 0:
             termux=True
@@ -45,6 +46,7 @@ def main():
     op="null"
     for i in sys.argv:
 
+        ############################################################################################
         #######################################Selección de operación###############################
 
         if op == "null":
