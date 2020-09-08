@@ -21,7 +21,18 @@ def main():
     if not termux:
         os.chdir('/etc')
     else:
-        os.chdir('/data/data/com.termux/files/home/')
+        try:
+            os.chdir('/data/data/com.termux/files/home/.config/')
+        except FileNotFoundError:
+            os.chdir('/data/data/com.termux/files/home')
+            os.mkdir('.config')
+            os.chdir('.config')
+        try:
+            os.chdir('hkpac')
+        except FileNotFoundError:
+            os.mkdir('hkpac')
+            os.chdir('hkpac')
+
     if len(sys.argv) == 1:
         print("{}error:{} No se ha especificado una operacion".format(red,nml))
         exit(1)
@@ -103,7 +114,7 @@ def main():
                 if not termux:
                     os.chdir('/etc')
                 else:
-                    os.chdir('/data/data/com.termux/files/home/')
+                    os.chdir('/data/data/com.termux/files/home/.config/hkpac')
                 if x+1 > len(sys.argv)-1:
                     exit()
                 else:
@@ -154,7 +165,7 @@ def main():
                     if not termux:
                         os.chdir('/etc')
                     else:
-                        os.chdir('/data/data/com.termux/files/home')
+                        os.chdir('/data/data/com.termux/files/home/.config/hkpac')
                     if not 'hkpac.conf' in os.listdir():
                         F=open('hkpac.conf','w+')
                     else:
@@ -178,7 +189,7 @@ def main():
                 if not termux:
                     os.chdir('/etc')
                 else:
-                    os.chdir('/data/data/com.termux/files/home/')
+                    os.chdir('/data/data/com.termux/files/home/.config/hkpac')
                 if not 'hkpac.conf' in os.listdir():
                     F=open('hkpac.conf','w+')
                 else:
@@ -212,8 +223,11 @@ def main():
                     hkpac = json.load(F)
             if sys.argv[x] in hkpac['packs'][0]:
                 os.chdir(instdir)
-                os.remove(sys.argv[x])
-                print(sys.argv[x] + ' se ha removido.')
+                if sys.argv[x] in os.listdir():
+                    os.remove(sys.argv[x])
+                    print(sys.argv[x] + ' se ha removido.')
+                else:
+                    print(sys.argv[x] + ' no está instalado.')
                 if x+1 > len(sys.argv)-1:
                     exit()
                 else:
