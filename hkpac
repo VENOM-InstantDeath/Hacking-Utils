@@ -42,7 +42,7 @@ def main():
         con=open('hkpac.conf','r')
         conf=json.load(con)
         del(con)
-        instdir=conf['conf'][0]['install dir']
+        instdir=conf['conf'][0]['instdir']
 #        termux=conf['conf'][0]['Termux']               //Ajuste descartado
     else:
         if os.system('uname -a | grep Android &> /dev/null') == 0:
@@ -52,6 +52,7 @@ def main():
         else:
             termux=False
             instdir='/usr/local/bin'
+        conf={'conf':[{'instdir': instdir}]}
 
     x=1
     op="null"
@@ -64,6 +65,10 @@ def main():
 
             if sys.argv[x] == "install":
                 op="install"
+                x+=1
+                continue
+            elif sys.argv[x] == "update":
+                op="update"
                 x+=1
                 continue
             elif sys.argv[x] == "search":
@@ -109,8 +114,10 @@ def main():
                     hkpac = json.load(F)
             if sys.argv[x] in hkpac['packs'][0]:
                 os.chdir(instdir)
-                os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x])
+                print("Obteniendo archivo...")
+                os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x] + " &> /dev/null")
                 os.system('chmod +x ' + sys.argv[x])
+                print("Modificado como ejecutable.")
                 if not termux:
                     os.chdir('/etc')
                 else:
@@ -122,7 +129,40 @@ def main():
                     continue
             else:
                 print('{}error:{} Objetivo no encontrado: '.format(red,nml) + sys.argv[x])
-                exit()
+                exit(1)
+        
+        ##############################################################################################
+        ######################################Operación search########################################
+
+        elif op == "search":
+
+            if len(sys.argv)-1 < x:
+                print('{}error:{} No se ha especificado un objetivo.'.format(red,nml))
+                exit(1)
+            if len(sys.argv[x]) == 0:
+                print('{}error:{} No se ha especificado un objetivo.'.format(red,nml))
+                exit(1)
+            if F == None:
+                if not 'hkpac.json' in os.listdir():
+                    print('Faltan los datos de hkpac. Ejecute \'hkpac update\'')
+                    exit(1)
+                with open('hkpac.json') as F:
+                    hkpac = json.load(F)
+            if sys.argv[x] in hkpac['packs'][0]:
+                print("{} encontrado en {}".format(sys.argv[x],hkpac['packs'][0][sys.argv[x]]['local']))
+                if not termux:
+                    os.chdir('/etc')
+                else:
+                    os.chdir('/data/data/com.termux/files/home/.config/hkpac')
+                if x+1 > len(sys.argv)-1:
+                    exit()
+                else:
+                    x+=1
+                    continue
+            else:
+                print('Objetivo no encontrado: ' + sys.argv[x])
+                exit(1)
+
         ##############################################################################################
         ######################################Operación config########################################
 
@@ -138,10 +178,15 @@ def main():
             EUID=os.popen("echo $EUID").read().strip()
             if len(EUID) == 0:
                 EUID=False
-            elif not len(EUID) == 0 and EUID == 0:
+            elif not len(EUID) == 0 and int(EUID) == 0:
                 EUID=True
             else:
                 EUID=False
+
+            if sys.argv[x] == 'list':
+                for i in conf['conf'][0]:
+                    print(i)
+                exit()
 
             if sys.argv[x] == 'instdir':
                 x+=1
@@ -170,7 +215,7 @@ def main():
                         F=open('hkpac.conf','w+')
                     else:
                         F=open('hkpac.conf','w')
-                    conf['conf'][0]["install dir"] = '/usr/local/bin'
+                    conf['conf'][0]["instdir"] = '/usr/local/bin'
                     F.write(json.dumps(conf,indent=4))
                     F.seek(0)
                     F.close()
@@ -194,7 +239,7 @@ def main():
                     F=open('hkpac.conf','w+')
                 else:
                     F=open('hkpac.conf','w')
-                conf['conf'][0]["install dir"] = sys.argv[x]
+                conf['conf'][0]["instdir"] = sys.argv[x]
                 F.write(json.dumps(conf,indent=4))
                 F.seek(0)
                 F.close()
@@ -236,6 +281,35 @@ def main():
             else:
                 print('{}error:{} Objetivo no encontrado: '.format(red,nml) + sys.argv[x])
                 exit(1)
+
+        ##############################################################################################
+        ######################################Operacion update########################################
+
+        elif op == "update":
+            if not termux:
+                os.chdir('/etc')
+            else:
+                os.chdir('/data/data/com.termux/files/home/.config/hkpac')
+
+            EUID=os.popen("echo $EUID").read().strip()
+            if len(EUID) == 0:
+                EUID=False
+            elif not len(EUID) == 0 and int(EUID) == 0:
+                EUID=True
+            else:
+                EUID=False
+            if EUID == False and not termux:
+                print('{}error:{} Permisos insuficientes. Intenta ejecutando como root.'.format(red,nml))
+                exit(1)
+            if not 'hkpac.json' in os.listdir():
+                os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/extra/hkpac.json &> /dev/null')
+            else:
+                os.remove('hkpac.json')
+                os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/extra/hkpac.json &> /dev/null')
+            print("Datos actualizados correctamente.")
+            exit()
+
+
 
 
 
