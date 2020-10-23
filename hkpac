@@ -114,9 +114,12 @@ def main():
                     hkpac = json.load(F)
             if sys.argv[x] in hkpac['packs'][0]:
                 os.chdir(instdir)
+                if sys.argv[x] in os.listdir():
+                    print('{}error:{} El paquete especificado ya está instalado.'.format(red,nml))
+                    exit(1)
                 print("Obteniendo archivo...")
                 os.system('wget https://raw.githubusercontent.com/VENOM-InstantDeath/hkprogs/master/' + hkpac['packs'][0][sys.argv[x]]['local'] + sys.argv[x] + " &> /dev/null")
-                os.system('chmod +x ' + sys.argv[x])
+                os.system('chmod +x ' + sys.argv[x]);os.system('chmod a+wr {}'.format(sys.argv[x]))
                 print("Modificado como ejecutable.")
                 if not termux:
                     os.chdir('/etc')
